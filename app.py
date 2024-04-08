@@ -176,8 +176,8 @@ def allAnalysis():
 @app.route('/compareCountries', methods=['GET', 'POST'])
 def compareCountries():
     if request.method == 'POST':
-        country_code1 = str(request.form['country_code1'])
-        country_code2 = str(request.form['country_code2'])
+        country_code1 = str(request.form['country1'])
+        country_code2 = str(request.form['country2'])
         metric = str(request.form['metric'])  # New input for the selected metric
         
         # Filter the DataFrame for the selected countries
@@ -193,18 +193,6 @@ def compareCountries():
             # Gather data on Death rate
             df_grouped_1 = df_filtered1.groupBy("Year").agg(functions.sum("Death Rate Per 100,000").alias("Death Rate"))
             df_grouped_2 = df_filtered2.groupBy("Year").agg(functions.sum("Death Rate Per 100,000").alias("Death Rate"))
-        elif metric == 'Infant Mortality Rate':
-            # Filter the DataFrame for the age group 0-6 days
-            df_infant_deaths1 = df_filtered1.filter(df_filtered1["Age Group"] == "0-6 days")
-            df_infant_deaths2 = df_filtered2.filter(df_filtered2["Age Group"] == "0-6 days")
-            
-            # Calculate the total number of infant deaths
-            total_infant_deaths1 = df_infant_deaths1.groupBy().agg(functions.sum("Number of Deaths").alias("Total Infant Deaths")).collect()[0]["Total Infant Deaths"]
-            total_infant_deaths2 = df_infant_deaths2.groupBy().agg(functions.sum("Number of Deaths").alias("Total Infant Deaths")).collect()[0]["Total Infant Deaths"]
-            
-            # Create DataFrame for plotting
-            df_grouped_1 = spark.createDataFrame([(country_code1, total_infant_deaths1)], ["Country Code", "Infant Mortality Rate"])
-            df_grouped_2 = spark.createDataFrame([(country_code2, total_infant_deaths2)], ["Country Code", "Infant Mortality Rate"])
         
         # Collect data from data frames
         data_1 = df_grouped_1.collect()
@@ -214,7 +202,7 @@ def compareCountries():
         y1_vals = [row[metric] for row in data_1]
         y2_vals = [row[metric] for row in data_2]
 
-        # Create plot1 
+        # Create plot
         fig, ax1 = plt.subplots()
         ax1.plot(x_vals, y1_vals, label=country_code1)
         ax1.plot(x_vals, y2_vals, label=country_code2)
@@ -222,7 +210,7 @@ def compareCountries():
         ax1.set_ylabel(metric)
         ax1.set_title("{} Comparison between {} and {}".format(metric, country_code1, country_code2))
         ax1.legend()
-        
+
         # Save plot in png format to send to frontend
         plot_buf = io.BytesIO()
         plt.savefig(plot_buf, format='png')
@@ -230,10 +218,8 @@ def compareCountries():
         plot_base64 = base64.b64encode(plot_buf.read()).decode('utf-8')
         plt.close(fig)  
 
-        return render_template('compareCountries.html', countries=session.get('country_codes',plot=plot_base64))
-    
-    return render_template('compareCountries.html', countries=session.get('country_codes'))
-
+        return render_template('compareCountries.html', countries=session.get('country_codes'),plot=plot_base64)
+    return render_template('compareCountries.html', countries=session.get('country_codes'), plot = None)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
