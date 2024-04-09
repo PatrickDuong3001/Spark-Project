@@ -13,13 +13,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Download plot
     document.getElementById('downloadBtn').addEventListener('click', function() {
-        const plotImage = document.querySelector('img');
-        const imageSrc = plotImage.src;
-        const downloadLink = document.createElement('a');
-        downloadLink.href = imageSrc;
-        downloadLink.download = '2_countries_comparison.png';
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
+        const plotImg = document.querySelector('img');
+        const imgSrc = plotImg.src;
+        const downLink = document.createElement('a');
+        downLink.href = imgSrc;
+        downLink.download = '2_countries_comparison.png';
+        document.body.appendChild(downLink);
+        downLink.click();
+        document.body.removeChild(downLink);
     });
 });

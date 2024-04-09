@@ -47,8 +47,14 @@
 
     {% if plot1 and plot2 %}
     <div class="center">
-        <img src="data:image/png;base64,{{ plot1 }}" alt="Plot1">
-        <img src="data:image/png;base64,{{ plot2 }}" alt="Plot2">
+        <div>
+            <img src="data:image/png;base64,{{ plot1 }}" alt="Plot1">
+            <a href="#" class="btn btn-primary download-btn" data-plot="{{ plot1 }}">Download Plot 1</a>
+        </div>
+        <div>
+            <img src="data:image/png;base64,{{ plot2 }}" alt="Plot2">
+            <a href="#" class="btn btn-primary download-btn" data-plot="{{ plot2 }}">Download Plot 2</a>
+        </div>
     </div>
     {% endif %}
 </body>
