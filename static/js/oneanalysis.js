@@ -26,9 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.download-btn').forEach(function(button) {
         button.addEventListener('click', function(event) {
             event.preventDefault();
-            const plotData = this.getAttribute('data-plot');
+            const pData = this.getAttribute('data-plot');
             const downLink = document.createElement('a');
-            downLink.href = 'data:image/png;base64,' + plotData;
+            downLink.href = 'data:image/png;base64,' + pData;
             downLink.download = 'oneAnalysis.png'; 
             document.body.appendChild(downLink);
             downLink.click();
